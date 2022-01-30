@@ -325,3 +325,29 @@ export interface ResponsePokeList {
 }
 
 export type ILoading = 'idle' | 'loading' | 'error';
+
+export interface Pokemon {
+  name: string;
+}
+
+export interface User {
+  _id: string;
+  name: string;
+  password: string;
+  pokemons: Pokemon[];
+  createdAt: Date;
+  updatedAt: Date;
+  __v: number;
+}
+
+export interface IResponseLogin {
+  user: User;
+  sucessso: boolean;
+  message?: any;
+}
+
+export interface IResponseUsuarios {
+  users: User[];
+  sucessso: boolean;
+  message?: any;
+}

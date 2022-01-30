@@ -1,37 +1,59 @@
 import { HomeOrganism } from 'components/organism';
-import React, { useCallback } from 'react';
+import UsuariosOrgnism from 'components/organism/UsuariosOrgnism/UsuariosOrgnism';
+import useApp from 'hooks/useApp';
+import React, { useCallback, useEffect, useState } from 'react';
 import Loading from 'react-loading';
 import { GetByName } from 'services/poke';
-import { ILoading, ResponsePokeByName } from 'utils/types';
+import { GetAllUsers } from 'services/services';
+import { ResponsePokeByName, User } from 'utils/types';
 import MainTemplate from '../../components/template/MainTemplate/MainTemplate';
 
 const Home: React.FC = () => {
-  const [loadingPage, setLoadingPage] = React.useState<ILoading>('idle');
+  const { showAlert, toggleLoading } = useApp();
   const [pokeFind, setPokeFind] = React.useState<
     ResponsePokeByName | undefined
   >();
+  const [listaUsuarios, setListaUsuarios] = useState<User[] | undefined>();
 
   const handleSerachPoke = async (name: string) => {
-    setLoadingPage('loading');
+    toggleLoading(true);
     try {
       const response = await GetByName(name);
       if (response.status !== 200) throw new Error('Erro');
 
       setPokeFind(response.data);
 
-      setLoadingPage('idle');
+      toggleLoading();
     } catch (error) {
-      setLoadingPage('error');
+      toggleLoading();
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    const getData = async () => {
+      toggleLoading(true);
+      try {
+        const response = await GetAllUsers();
+        console.log(response);
+        if (response.status !== 200) throw new Error(response.data.message);
+
+        setListaUsuarios(response.data.users);
+        toggleLoading();
+      } catch (error) {
+        toggleLoading();
+        showAlert({
+          title: 'Error',
+          message: 'Não foi possivel obter usuarios',
+        });
+      }
+    };
+    getData();
+  }, []);
   return (
     <MainTemplate>
-      {loadingPage === 'loading' && <Loading />}
-      {loadingPage === 'idle' && (
-        <HomeOrganism handleSerachPoke={handleSerachPoke} pokeFind={pokeFind} />
-      )}
-      {loadingPage === 'error' && <h1>Erro</h1>}
+      <HomeOrganism handleSerachPoke={handleSerachPoke} pokeFind={pokeFind} />
+      <UsuariosOrgnism listUsuarios={listaUsuarios} />
     </MainTemplate>
   );
 };

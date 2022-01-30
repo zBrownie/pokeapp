@@ -1,5 +1,9 @@
 import axios from 'axios';
-const HandleRequest = axios.create({
-  baseURL: 'https://pokeapi.co/api/v2/',
+const HandlePokeRequest = axios.create({
+  baseURL: 'https://pokeapi.co/api/v2',
 });
-export default HandleRequest;
+
+const HandleApi = axios.create({
+  baseURL: 'http://localhost:3030',
+});
+export { HandlePokeRequest, HandleApi };

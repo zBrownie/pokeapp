@@ -6,7 +6,7 @@ export interface ILoading {
   color?: string;
 }
 const Loading: React.FC<ILoading> = ({ type = 'spin', color = '#232323' }) => {
-  return <ReactLoading color={color} height={667} width={375} type={type} />;
+  return <ReactLoading color={color} height="2rem" width="2rem" type={type} />;
 };
 
 export default Loading;
